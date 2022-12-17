@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<?import com.course.project_javafx.User?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<GridPane alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.course.project_javafx.AccountManagerController" hgap="20.0" vgap="10.0">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <children>
+        <Button text="Назад" onAction="#onBackButtonClick"/>
+            <Button text="Обновить" alignment="TOP_CENTER" onAction="#updateTable" GridPane.rowIndex="1"/>
+        <TableView  fx:id="table" GridPane.columnIndex="0" GridPane.rowIndex="2" onMouseClicked="#onTableClicked">
+            <columns>
+                <TableColumn text="login" minWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="login"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="password" minWidth="600">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="password"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="role">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="role"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+        <VBox spacing="10" alignment="TOP_CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label fx:id="editLabel"/>
+            <TextField fx:id="editLoginField" promptText="Логин"/>
+            <TextField fx:id="editPasswordField" promptText="Пароль (неизменный)"/>
+            <ChoiceBox fx:id="editRoleChoiceBox" value="            ">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Пользователь"/>
+                        <String fx:value="Администратор"/>
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Удалить" onAction="#onDeleteButtonClicked"/>
+                <Button text="Редактировать" onAction="#onEditButtonClicked"/>
+            </HBox>
+        </VBox>
+        <HBox spacing="10" alignment="BOTTOM_CENTER" GridPane.columnIndex="0" GridPane.rowIndex="3">
+            <TextField fx:id="loginField" promptText="Логин"/>
+            <TextField fx:id="passwordField" promptText="Пароль"/>
+            <ChoiceBox fx:id="roleChoiceBox" value="Пользователь">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Пользователь"/>
+                        <String fx:value="Администратор"/>
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+            <Button text="Добавить" onAction="#onAddButtonClick"/>
+        </HBox>
+        <Label fx:id="addLabel" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    </children>
+</GridPane>
