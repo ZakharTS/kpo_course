@@ -22,7 +22,7 @@
             <Button text="Администратор" onAction="#onAdminButtonClicked"/>
             <Label fx:id="errorLabel"/>
         </HBox>
-        <Button text="Обновить" onAction="#onUpdateButtonClick"/>
+        <Button text="Обновить" onAction="#updateTable"/>
         <!--        <HBox alignment="TOP_LEFT" spacing="20">-->
         <GridPane vgap="20" hgap="10">
             <!--        Поиск по базе-->
@@ -122,7 +122,7 @@
                         </TableColumn>
                     </columns>
                 </TableColumn>
-                <TableColumn text="О/Д" resizable="false" maxWidth="50">
+                <TableColumn text="О/Д" resizable="false" prefWidth="70">
                     <cellValueFactory>
                         <PropertyValueFactory property="socWork"/>
                     </cellValueFactory>

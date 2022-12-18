@@ -19,13 +19,14 @@ public class ScholarshipCalculationController {
     public ChoiceBox searchChoiceBox;
     public TextField searchTextField;
     public Label errorLabel;
+    public TextField scholarshipTextField;
 
-    public void updateTable(String query) {
+    public void updateTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 //        data.add(new Student(0, "ПО-9", "Харитонович З. С.", true,
 //                new boolean[]{true, true, true, true, true}, new int[]{10, 10, 10, 10}, true, 120.0));
         try {
-            ResultSet rs = Database.sqlRequest(query);
+            ResultSet rs = Database.sqlRequest("SELECT * FROM students;");
             data.clear();
             while (rs.next()) {
                 data.add(new Student(rs));
@@ -40,22 +41,12 @@ public class ScholarshipCalculationController {
         MainApplication.changeScene("menu-view.fxml", "Меню", 320, 240);
     }
 
-    public void onAddButtonClicked(ActionEvent actionEvent) {
-
-    }
-
-    public void onEditButtonClicked(ActionEvent actionEvent) {
-    }
-
     public void onTableClicked(MouseEvent mouseEvent) {
-    }
-
-    public void onDeleteButtonClicked(ActionEvent actionEvent) {
     }
 
     public void onSearchButtonClicked(ActionEvent actionEvent) {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        updateTable("SELECT * FROM students;");
+        updateTable();
         ObservableList<Student> newData = FXCollections.observableArrayList();
 //        data.add(new Student(0, "ПО-9", "Харитонович З. С.", true,
 //                new boolean[]{true, true, true, true, true}, new int[]{10, 10, 10, 10}, true, 120.0));
@@ -91,10 +82,40 @@ public class ScholarshipCalculationController {
     }
 
     public void onCalculateButtonClick(ActionEvent actionEvent) {
-    }
-
-    public void onUpdateButtonClick(ActionEvent actionEvent) {
-        updateTable("SELECT * FROM students;");
+        updateTable();
+        ObservableList<Student> newData = FXCollections.observableArrayList();
+        for (Student cur : data) {
+            if (cur.getEduForm().equals("Б")) {
+                for (String credit : cur.getCredits()) {
+                    if (credit.equals("Н/З")) {
+                        cur.setScholarship("0.0");
+                        break;
+                    }
+                }
+                int sum = 0;
+                boolean isK1 = true;
+                double k = 1.5;
+                for (String exam : cur.getExams()) {
+                    if (Integer.parseInt(exam) < 9) {
+                        isK1 = false;
+                    }
+                    sum += Integer.parseInt(exam);
+                }
+                if (sum / 4.0 < 5.0) {
+                    cur.setScholarship("0.0");
+                    continue;
+                }
+                if (!isK1) {
+                    k -= 0.25;
+                }
+                if (cur.getSocWork().equals("Неакт.")) {
+                    k -= 0.25;
+                }
+                cur.setScholarship(Double.toString(Double.parseDouble(scholarshipTextField.getText()) * k));
+            }
+            newData.add(cur);
+        }
+        table.setItems(newData);
     }
 
     public void onAdminButtonClicked(ActionEvent actionEvent) throws IOException {

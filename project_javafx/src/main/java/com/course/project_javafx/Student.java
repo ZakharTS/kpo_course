@@ -63,7 +63,7 @@ public class Student {
         }
         exams = new String[4];
         words = rs.getString("exams").split(", ");
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             exams[i] = words[i];
         }
         if (rs.getBoolean("socWork")) {
