@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -12,13 +11,12 @@ import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.sql.ResultSet;
 
-public class ScholarshipCalculationController {
+public class ScholarshipAdminController {
 
     public TableView<Student> table;
     private final ObservableList<Student> data = FXCollections.observableArrayList();
     public ChoiceBox searchChoiceBox;
     public TextField searchTextField;
-    public Label errorLabel;
 
     public void updateTable(String query) {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -37,7 +35,7 @@ public class ScholarshipCalculationController {
     }
 
     public void onBackButtonClicked() throws IOException {
-        MainApplication.changeScene("menu-view.fxml", "Меню", 320, 240);
+        MainApplication.changeScene("scholarship-calculation-view.fxml", "Расчёт стипендии", 1280, 720);
     }
 
     public void onAddButtonClicked(ActionEvent actionEvent) {
@@ -97,11 +95,6 @@ public class ScholarshipCalculationController {
         updateTable("SELECT * FROM students;");
     }
 
-    public void onAdminButtonClicked(ActionEvent actionEvent) throws IOException {
-        if (MainApplication.getUser().isRole()) {
-            MainApplication.changeScene("scholarship-admin-view.fxml", "Расчёт стипендии", 1280, 720);
-        } else {
-            errorLabel.setText("Недостаточно прав.");
-        }
+    public void onAdminButtonClicked(ActionEvent actionEvent) {
     }
 }

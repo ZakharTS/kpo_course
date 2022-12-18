@@ -15,7 +15,7 @@ public class MenuController {
     }
 
     public void onScholarshipCalculationButtonClick() throws IOException {
-        MainApplication.changeScene("scholarship-calculation-view.fxml", "Расчёт стипендии", 320, 240);
+        MainApplication.changeScene("scholarship-calculation-view.fxml", "Расчёт стипендии", 1280, 720);
     }
 
     public void onExitButtonClick() throws IOException {
