@@ -19,8 +19,6 @@
     <children>
         <HBox spacing="20">
             <Button text="Назад" onAction="#onBackButtonClicked"/>
-            <Button text="Администратор" onAction="#onAdminButtonClicked"/>
-            <Label fx:id="errorLabel"/>
         </HBox>
         <Button text="Обновить" onAction="#onUpdateButtonClick"/>
         <!--        <HBox alignment="TOP_LEFT" spacing="20">-->
