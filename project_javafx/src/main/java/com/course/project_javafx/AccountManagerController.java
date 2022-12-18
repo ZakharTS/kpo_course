@@ -137,7 +137,7 @@ public class AccountManagerController {
             }
 
             String newPassword = new String();
-            if (!editPasswordField.equals("")) {
+            if (!editPasswordField.getText().equals("")) {
                 try {
                     newPassword = AuthenticationController.stringToHash(editPasswordField.getText());
                 } catch (Exception e) {}
