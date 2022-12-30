@@ -46,7 +46,7 @@ public class AuthenticationController {
             rs.next();
 //            System.out.println(rs.getString("password"));
             if (passwordHash.equals(rs.getString("password"))) {
-                user = new User(rs.getString("login"), rs.getString("role"));
+                user = new User(rs.getString("login"), rs.getBoolean("role"));
                 System.out.println("User " + login + " logged in.");
             }
         } catch (Exception e) {

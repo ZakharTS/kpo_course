@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.Optional;
 
 /*Управление учетными записями пользователей: просмотреть все учетные записи;
 добавить учетную запись; отредактировать учетную запись; удалить учетную запись. */
@@ -32,7 +33,7 @@ public class AccountManagerController {
             data.clear();
             while (rs.next()) {
                 User curUser = new User(rs.getString("login"), rs.getString("password"),
-                        rs.getString("role"));
+                        rs.getBoolean("role"));
                 data.add(curUser);
             }
             table.setItems(data);
@@ -93,7 +94,20 @@ public class AccountManagerController {
     }
 
     public void onDeleteButtonClicked() {
-        if (true && table.getSelectionModel().getSelectedItem() != null) { // добавить подтверждение операции вместо true
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            editLabel.setText("Выберите запись.");
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение");
+        alert.setHeaderText("Удаление записи пользователя " + table.getSelectionModel().getSelectedItem().getLogin());
+        alert.setContentText("Вы точно хотите удалить эту запись?");
+        ButtonType buttonYes = new ButtonType("Да");
+        ButtonType buttonCancel = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonYes, buttonCancel);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonYes) {
             try {
                 Database.sqlUpdate("DELETE FROM users WHERE login=\"" + table.getSelectionModel().getSelectedItem().getLogin() + "\";");
                 this.updateTable();
@@ -140,13 +154,14 @@ public class AccountManagerController {
             if (!editPasswordField.getText().equals("")) {
                 try {
                     newPassword = AuthenticationController.stringToHash(editPasswordField.getText());
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             } else {
                 newPassword = table.getSelectionModel().getSelectedItem().getPassword();
             }
             try {
                 Database.sqlUpdate("UPDATE users SET login=\"" + newLogin + "\", password=\"" + newPassword
-                         + "\", role=" + role +
+                        + "\", role=" + role +
                         " WHERE login=\"" + table.getSelectionModel().getSelectedItem().getLogin() + "\";");
                 editLabel.setText("Запись обновлена.");
                 editLoginField.setText("");
@@ -155,7 +170,8 @@ public class AccountManagerController {
                 this.updateTable();
             } catch (Exception e) {
                 editLabel.setText("Что-то пошло не так.");
-                System.out.println(e);;
+                System.out.println(e);
+                ;
             }
         }
     }

@@ -4,170 +4,199 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Student {
-    private String id;
+    //    private String id;
+//    private String NSP; // ФИО
+//    private String group; // группа
+//    private String eduForm; // форма обучения
+//    private String[] credits; // зачёты ??
+//    private String[] exams; // экзамены
+//    private String socWork; // участие в общественной работе
+//    private String scholarship;
+    private int id;
     private String NSP; // ФИО
     private String group; // группа
-    private String eduForm; // форма обучения
-    private String[] credits; // зачёты ??
-    private String[] exams; // экзамены
-    private String socWork; // участие в общественной работе
-    private String scholarship;
+    private boolean eduForm; // форма обучения
+    private boolean[] credits; // зачёты ??
+    private int[] exams; // экзамены
+    private boolean socWork; // участие в общественной работе
+    private double scholarship; // размер стипендии
 
     Student(int id, String group, String NSP, boolean eduForm, boolean[] credits, int[] exams,
             boolean socWork, double scholarship) {
-        this.id = Integer.toString(id);
+        this.id = id;
         this.group = group;
         this.NSP = NSP;
-        if (eduForm) {
-            this.eduForm = "Б";
-        } else {
-            this.eduForm = "П";
-        }
-        this.credits = new String[5];
+        this.eduForm = eduForm;
+        this.credits = new boolean[5];
         for (int i = 0; i < 5; i++) {
-            if (credits[i]) {
-                this.credits[i] = "Зачт.";
-            } else {
-                this.credits[i] = "Н/З";
-            }
+            this.credits[i] = credits[i];
         }
-        this.exams = new String[4];
+        this.exams = new int[4];
         for (int i = 0; i < 4; i++) {
-            this.exams[i] = Integer.toString(exams[i]);
+            this.exams[i] = exams[i];
         }
-        if (socWork) {
-            this.socWork = "Акт.";
-        } else {
-            this.socWork = "Неакт.";
-        }
-        this.scholarship = Double.toString(scholarship);
+        this.socWork = socWork;
+        this.scholarship = scholarship;
     }
 
     Student(ResultSet rs) throws SQLException {
-        id = rs.getString("id");
+        id = rs.getInt("id");
         group = rs.getString("grp");
         NSP = rs.getString("nsp");
-        if (rs.getBoolean("eduForm")) {
-            eduForm = "Б";
-        } else {
-            eduForm = "П";
-        }
-        credits = new String[5];
+        eduForm = rs.getBoolean("eduForm");
+        credits = new boolean[5];
         String[] words = rs.getString("credits").split(", ");
         for (int i = 0; i < 5; i++) {
             if (words[i].equals("1")) {
-                credits[i] = "Зачт.";
+                credits[i] = true;
             } else {
-                credits[i] = "Н/З";
+                credits[i] = false;
             }
         }
-        exams = new String[4];
+        exams = new int[4];
         words = rs.getString("exams").split(", ");
         for (int i = 0; i < 4; i++) {
-            exams[i] = words[i];
+            exams[i] = Integer.parseInt(words[i]);
         }
-        if (rs.getBoolean("socWork")) {
-            socWork = "Акт.";
+        socWork = rs.getBoolean("socWork");
+        scholarship = rs.getDouble("scholarship");
+    }
+
+    public String getId() {
+        return Integer.toString(id);
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getNSP() {
+        return NSP;
+    }
+
+    public void setNSP(String NSP) {
+        this.NSP = NSP;
+    }
+
+    public String getEduForm() {
+        if (eduForm) {
+            return "Б";
         } else {
-            socWork = "Неакт.";
-        }
-        scholarship = rs.getString("scholarship");
-    }
-
-        public String getId () {
-            return id;
-        }
-
-        public void setId (String id){
-            this.id = id;
-        }
-
-        public String getGroup () {
-            return group;
-        }
-
-        public void setGroup (String group){
-            this.group = group;
-        }
-
-        public String getNSP () {
-            return NSP;
-        }
-
-        public void setNSP (String NSP){
-            this.NSP = NSP;
-        }
-
-        public String getEduForm () {
-            return eduForm;
-        }
-
-        public void setEduForm (String eduForm){
-            this.eduForm = eduForm;
-        }
-
-        public String getCredit0 () {
-            return credits[0];
-        }
-        public String getCredit1 () {
-            return credits[1];
-        }
-        public String getCredit2 () {
-            return credits[2];
-        }
-        public String getCredit3 () {
-            return credits[3];
-        }
-        public String getCredit4 () {
-            return credits[4];
-        }
-
-        public void setCredits (String[]credits){
-            this.credits = credits;
-        }
-
-        public String[] getExams () {
-            return exams;
-        }
-
-        public String getExam0 () {
-            return exams[0];
-        }
-
-        public String getExam1 () {
-            return exams[1];
-        }
-        public String getExam2 () {
-            return exams[2];
-        }
-        public String getExam3 () {
-            return exams[3];
-        }
-        public void setExams (String[]exams){
-            this.exams = exams;
-        }
-
-        public String getSocWork () {
-            return socWork;
-        }
-
-        public void setSocWork (String socWork){
-            this.socWork = socWork;
-        }
-
-        public String[] getCredits () {
-            return credits;
-        }
-
-        public String getScholarship () {
-            return scholarship;
-        }
-
-        public void setScholarship (String scholarship){
-            this.scholarship = scholarship;
-        }
-
-        public String toString () {
-            return id + " " + NSP + " " + group + " " + eduForm + " " + socWork;
+            return "П";
         }
     }
+    public boolean getEduFormRaw() {
+        return eduForm;
+    }
+
+    public void setEduForm(boolean eduForm) {
+        this.eduForm = eduForm;
+    }
+
+    public String getCredit0() {
+        if (credits[0]) {
+            return "Зачт.";
+        } else {
+            return "Н/З";
+        }
+    }
+
+    public String getCredit1() {
+        if (credits[1]) {
+            return "Зачт.";
+        } else {
+            return "Н/З";
+        }
+    }
+
+    public String getCredit2() {
+        if (credits[2]) {
+            return "Зачт.";
+        } else {
+            return "Н/З";
+        }
+    }
+
+    public String getCredit3() {
+        if (credits[3]) {
+            return "Зачт.";
+        } else {
+            return "Н/З";
+        }
+    }
+
+    public String getCredit4() {
+        if (credits[4]) {
+            return "Зачт.";
+        } else {
+            return "Н/З";
+        }
+    }
+
+    public void setCredits(boolean[] credits) {
+        this.credits = credits;
+    }
+
+    public int[] getExams() {
+        return exams;
+    }
+
+    public String getExam0() {
+        return Integer.toString(exams[0]);
+    }
+
+    public String getExam1() {
+        return Integer.toString(exams[1]);
+    }
+
+    public String getExam2() {
+        return Integer.toString(exams[2]);
+    }
+
+    public String getExam3() {
+        return Integer.toString(exams[3]);
+    }
+
+    public void setExams(int[] exams) {
+        this.exams = exams;
+    }
+
+    public String getSocWork() {
+        if (socWork) {
+            return "Акт.";
+        } else {
+            return "Неакт.";
+        }
+    }
+    public boolean getSocWorkRaw() {
+        return socWork;
+    }
+
+    public void setSocWork(boolean socWork) {
+        this.socWork = socWork;
+    }
+
+    public boolean[] getCredits() {
+        return credits;
+    }
+
+    public String getScholarship() {
+        return Double.toString(scholarship);
+    }
+
+    public void setScholarship(double scholarship) {
+        this.scholarship = scholarship;
+    }
+
+    public String toString() {
+        return id + " " + NSP + " " + group + " " + eduForm + " " + socWork;
+    }
+}

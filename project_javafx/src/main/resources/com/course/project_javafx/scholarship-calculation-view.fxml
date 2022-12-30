@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -127,7 +125,7 @@
                         <PropertyValueFactory property="socWork"/>
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn text="Стипендия">
+                <TableColumn text="Стипендия" resizable="true">
                     <cellValueFactory>
                         <PropertyValueFactory property="scholarship"/>
                     </cellValueFactory>

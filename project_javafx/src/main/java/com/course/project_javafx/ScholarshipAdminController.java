@@ -2,16 +2,14 @@ package com.course.project_javafx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Optional;
 
-public class ScholarshipAdminController {
+public class ScholarshipAdminController extends ScholarshipCalculationController {
 
     public TableView<Student> table;
     private final ObservableList<Student> data = FXCollections.observableArrayList();
@@ -33,27 +31,12 @@ public class ScholarshipAdminController {
     public ChoiceBox editSocWorkChoiceBox;
     public TextField scholarshipTextField;
 
-    public void updateTable() {
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-//        data.add(new Student(0, "ПО-9", "Харитонович З. С.", true,
-//                new boolean[]{true, true, true, true, true}, new int[]{10, 10, 10, 10}, true, 120.0));
-        try {
-            ResultSet rs = Database.sqlRequest("SELECT * FROM students;");
-            data.clear();
-            while (rs.next()) {
-                data.add(new Student(rs));
-            }
-            table.setItems(data);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
+    @Override
     public void onBackButtonClicked() throws IOException {
         MainApplication.changeScene("scholarship-calculation-view.fxml", "Расчёт стипендии", 1280, 720);
     }
 
-    public void onAddButtonClicked(ActionEvent actionEvent) {
+    private String[] formToStrings() {
         String NSP = editNSPField.getText();
         String group = editGroupField.getText();
 
@@ -73,7 +56,7 @@ public class ScholarshipAdminController {
                 exam0ChoiceBox.getValue().equals("") || exam1ChoiceBox.getValue().equals("") ||
                 exam2ChoiceBox.getValue().equals("") || exam3ChoiceBox.getValue().equals("")) {
             editLabel.setText("Заполните все поля.");
-            return;
+            return null;
         }
         ArrayList<CheckBox> creditsCheckBoxes = new ArrayList<>() {
             {
@@ -107,99 +90,60 @@ public class ScholarshipAdminController {
         }
         exams = exams.substring(0, exams.length() - 2);
 
+        String[] strings = {NSP, group, eduForm, credits, exams, socWork};
+        return strings;
+    }
+
+    public void onAddButtonClicked() {
+        String[] fields = formToStrings();
+        if (fields == null) return;
         try {
-            Database.sqlUpdate("INSERT INTO students values (NULL, \"" + NSP + "\", \"" + group + "\", " +
-                    eduForm + ", \"" + credits + "\", \"" + exams + "\", " + socWork + ", 0);");
+            Database.sqlUpdate("INSERT INTO students values (NULL, \"" + fields[0] + "\", \"" + fields[1] + "\", " +
+                    fields[2] + ", \"" + fields[3] + "\", \"" + fields[4] + "\", " + fields[5] + ", 0);");
             updateTable();
+            clearForm();
         } catch (Exception e) {
             System.out.println(e);
             editLabel.setText("Что-то пошло не так.");
         }
     }
+    public void clearForm() {
+        editNSPField.setText("");
+        editGroupField.setText("");
+        editSocWorkChoiceBox.setValue("");
+        editEduFormChoiceBox.setValue("");
+        credit0CheckBox.setSelected(false);
+        credit1CheckBox.setSelected(false);
+        credit2CheckBox.setSelected(false);
+        credit3CheckBox.setSelected(false);
+        credit4CheckBox.setSelected(false);
+        exam0ChoiceBox.setValue("");
+        exam1ChoiceBox.setValue("");
+        exam2ChoiceBox.setValue("");
+        exam3ChoiceBox.setValue("");
+    }
 
-    public void onEditButtonClicked(ActionEvent actionEvent) {
+    public void onEditButtonClicked() {
         if (table.getSelectionModel().getSelectedItem() == null) {
             editLabel.setText("Выберите запись.");
             return;
         }
-        String NSP = editNSPField.getText();
-        String group = editGroupField.getText();
-
-        String socWork = new String();
-        if (editSocWorkChoiceBox.getValue().toString().equals("Активная")) {
-            socWork = "1";
-        } else if (editSocWorkChoiceBox.getValue().toString().equals("Неактивная")) {
-            socWork = "0";
-        }
-        String eduForm = new String();
-        if (editEduFormChoiceBox.getValue().toString().equals("Бюджетная")) {
-            eduForm = "1";
-        } else if (editEduFormChoiceBox.getValue().toString().equals("Платная")) {
-            eduForm = "0";
-        }
-        if (NSP.equals("") || group.equals("") || socWork.equals("") || eduForm.equals("") ||
-                exam0ChoiceBox.getValue().equals("") || exam1ChoiceBox.getValue().equals("") ||
-                exam2ChoiceBox.getValue().equals("") || exam3ChoiceBox.getValue().equals("")) {
-            editLabel.setText("Заполните все поля.");
-            return;
-        }
-        ArrayList<CheckBox> creditsCheckBoxes = new ArrayList<>() {
-            {
-                add(credit0CheckBox);
-                add(credit1CheckBox);
-                add(credit2CheckBox);
-                add(credit3CheckBox);
-                add(credit4CheckBox);
-            }
-        };
-        String credits = new String();
-        for (CheckBox cur : creditsCheckBoxes) {
-            if (cur.isSelected()) {
-                credits += "1, ";
-            } else {
-                credits += "0, ";
-            }
-        }
-        credits = credits.substring(0, credits.length() - 2);
-        ArrayList<ChoiceBox> examsChoiceBoxes = new ArrayList<>() {
-            {
-                add(exam0ChoiceBox);
-                add(exam1ChoiceBox);
-                add(exam2ChoiceBox);
-                add(exam3ChoiceBox);
-            }
-        };
-        String exams = new String();
-        for (ChoiceBox cur : examsChoiceBoxes) {
-            exams += cur.getValue().toString() + ", ";
-        }
-        exams = exams.substring(0, exams.length() - 2);
-
+        final String[] fields = formToStrings();
+        if (fields == null) return;
         try {
-            Database.sqlUpdate("UPDATE students SET nsp=\"" + NSP + "\", grp=\"" + group + "\", eduForm="
-                    + eduForm + ", credits=\"" + credits + "\", exams=\"" + exams + "\", socWork=" + socWork +
+            Database.sqlUpdate("UPDATE students SET nsp=\"" + fields[0] + "\", grp=\"" + fields[1] + "\", eduForm="
+                    + fields[2] + ", credits=\"" + fields[3] + "\", exams=\"" + fields[4] + "\", socWork=" + fields[5] +
                     " WHERE id=" + table.getSelectionModel().getSelectedItem().getId() + ";");
             updateTable();
-            editLabel.setText("");
-            editNSPField.setText("");
-            editGroupField.setText("");
-            editSocWorkChoiceBox.setValue("");
-            editEduFormChoiceBox.setValue("");
-            credit0CheckBox.setSelected(false);
-            credit1CheckBox.setSelected(false);
-            credit2CheckBox.setSelected(false);
-            credit3CheckBox.setSelected(false);
-            credit4CheckBox.setSelected(false);
-            exam0ChoiceBox.setValue("");
-            exam1ChoiceBox.setValue("");
-            exam2ChoiceBox.setValue("");
-            exam3ChoiceBox.setValue("");
+            editLabel.setText("Запись изменена.");
+            clearForm();
         } catch (Exception e) {
             System.out.println(e);
             editLabel.setText("Что-то пошло не так.");
         }
     }
 
+    @Override
     public void onTableClicked(MouseEvent mouseEvent) {
         Student student = table.getSelectionModel().getSelectedItem();
         if (student == null) return;
@@ -253,89 +197,30 @@ public class ScholarshipAdminController {
         }
     }
 
-    public void onDeleteButtonClicked(ActionEvent actionEvent) {
-        if (true && table.getSelectionModel().getSelectedItem() != null) { // добавить подтверждение операции вместо true
+    public void onDeleteButtonClicked() {
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            editLabel.setText("Выберите запись.");
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение");
+        alert.setHeaderText("Удаление записи студента " + table.getSelectionModel().getSelectedItem().getNSP());
+        alert.setContentText("Вы точно хотите удалить эту запись?");
+        ButtonType buttonYes = new ButtonType("Да");
+        ButtonType buttonCancel = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonYes, buttonCancel);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonYes) {
             try {
                 Database.sqlUpdate("DELETE FROM students WHERE id=\"" + table.getSelectionModel().getSelectedItem().getId() + "\";");
-                this.updateTable();
+                updateTable();
                 editLabel.setText("Запись удалена.");
+                clearForm();
             } catch (Exception e) {
                 editLabel.setText("Что-то пошло не так.");
                 System.out.println(e);
             }
         }
-    }
-
-    public void onSearchButtonClicked(ActionEvent actionEvent) {
-        updateTable();
-        ObservableList<Student> newData = FXCollections.observableArrayList();
-//        data.add(new Student(0, "ПО-9", "Харитонович З. С.", true,
-//                new boolean[]{true, true, true, true, true}, new int[]{10, 10, 10, 10}, true, 120.0));
-        Object value = searchChoiceBox.getValue();
-        for (Student curStudent : data) {
-            if (value.equals("по всем полям")) {
-                if (curStudent.toString().contains(searchTextField.getText())) {
-                    newData.add(curStudent);
-                }
-            } else if (value.equals("id")) {
-                if (curStudent.getId().contains(searchTextField.getText())) {
-                    newData.add(curStudent);
-                }
-            } else if (value.equals("ФИО")) {
-                if (curStudent.getNSP().contains(searchTextField.getText())) {
-                    newData.add(curStudent);
-                }
-            } else if (value.equals("группа")) {
-                if (curStudent.getGroup().contains(searchTextField.getText())) {
-                    newData.add(curStudent);
-                }
-            } else if (value.equals("форма")) {
-                if (curStudent.getEduForm().contains(searchTextField.getText())) {
-                    newData.add(curStudent);
-                }
-            } else if (value.equals("общ. деятельность")) {
-                if (curStudent.getSocWork().contains(searchTextField.getText())) {
-                    newData.add(curStudent);
-                }
-            }
-        }
-        table.setItems(newData);
-    }
-
-    public void onCalculateButtonClick(ActionEvent actionEvent) {
-        updateTable();
-        ObservableList<Student> newData = FXCollections.observableArrayList();
-        for (Student cur : data) {
-            if (cur.getEduForm().equals("Б")) {
-                for (String credit : cur.getCredits()) {
-                    if (credit.equals("Н/З")) {
-                        cur.setScholarship("0.0");
-                        break;
-                    }
-                }
-                int sum = 0;
-                boolean isK1 = true;
-                double k = 1.5;
-                for (String exam : cur.getExams()) {
-                    if (Integer.parseInt(exam) < 9) {
-                        isK1 = false;
-                    }
-                    sum += Integer.parseInt(exam);
-                }
-                if (sum / 4.0 < 5.0) {
-                    cur.setScholarship("0.0");
-                    continue;
-                }
-                if (!isK1) {
-                    k -= 0.25;
-                }
-                if (cur.getSocWork().equals("Неакт.")) {
-                    k -= 0.25;
-                }
-                cur.setScholarship(Double.toString(Double.parseDouble(scholarshipTextField.getText()) * k));
-            }
-            newData.add(cur);
-        }
-        table.setItems(newData);
     }
 }

@@ -2,7 +2,6 @@ package com.course.project_javafx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -23,8 +22,6 @@ public class ScholarshipCalculationController {
 
     public void updateTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-//        data.add(new Student(0, "ПО-9", "Харитонович З. С.", true,
-//                new boolean[]{true, true, true, true, true}, new int[]{10, 10, 10, 10}, true, 120.0));
         try {
             ResultSet rs = Database.sqlRequest("SELECT * FROM students;");
             data.clear();
@@ -44,12 +41,9 @@ public class ScholarshipCalculationController {
     public void onTableClicked(MouseEvent mouseEvent) {
     }
 
-    public void onSearchButtonClicked(ActionEvent actionEvent) {
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    public void onSearchButtonClicked() {
         updateTable();
         ObservableList<Student> newData = FXCollections.observableArrayList();
-//        data.add(new Student(0, "ПО-9", "Харитонович З. С.", true,
-//                new boolean[]{true, true, true, true, true}, new int[]{10, 10, 10, 10}, true, 120.0));
         Object value = searchChoiceBox.getValue();
         for (Student curStudent : data) {
             if (value.equals("по всем полям")) {
@@ -81,44 +75,45 @@ public class ScholarshipCalculationController {
         table.setItems(newData);
     }
 
-    public void onCalculateButtonClick(ActionEvent actionEvent) {
+    public void onCalculateButtonClick() {
         updateTable();
         ObservableList<Student> newData = FXCollections.observableArrayList();
         for (Student cur : data) {
-            if (cur.getEduForm().equals("Б")) {
-                for (String credit : cur.getCredits()) {
-                    if (credit.equals("Н/З")) {
-                        cur.setScholarship("0.0");
-                        break;
-                    }
-                }
+            if (cur.getEduFormRaw()) {
                 int sum = 0;
                 boolean isK1 = true;
                 double k = 1.5;
-                for (String exam : cur.getExams()) {
-                    if (Integer.parseInt(exam) < 9) {
+                for (int exam : cur.getExams()) {
+                    if (exam < 9) {
                         isK1 = false;
                     }
-                    sum += Integer.parseInt(exam);
+                    sum += exam;
                 }
                 if (sum / 4.0 < 5.0) {
-                    cur.setScholarship("0.0");
+                    cur.setScholarship(0.0);
                     continue;
                 }
                 if (!isK1) {
                     k -= 0.25;
                 }
-                if (cur.getSocWork().equals("Неакт.")) {
+                if (!cur.getSocWorkRaw()) {
                     k -= 0.25;
                 }
-                cur.setScholarship(Double.toString(Double.parseDouble(scholarshipTextField.getText()) * k));
+                cur.setScholarship(Double.parseDouble(scholarshipTextField.getText()) * k);
+                for (boolean credit : cur.getCredits()) {
+                    if (!credit) {
+                        cur.setScholarship(0.0);
+                        break;
+                    }
+                }
             }
             newData.add(cur);
+            Database.sqlUpdate("UPDATE students SET scholarship=" + cur.getScholarship() + " WHERE id=" + cur.getId());
         }
         table.setItems(newData);
     }
 
-    public void onAdminButtonClicked(ActionEvent actionEvent) throws IOException {
+    public void onAdminButtonClicked() throws IOException {
         if (MainApplication.getUser().isRole()) {
             MainApplication.changeScene("scholarship-admin-view.fxml", "Расчёт стипендии", 1280, 720);
         } else {

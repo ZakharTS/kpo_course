@@ -19,8 +19,8 @@
 
     <children>
         <Button text="Назад" onAction="#onBackButtonClick"/>
-            <Button text="Обновить" alignment="TOP_CENTER" onAction="#updateTable" GridPane.rowIndex="1"/>
-        <TableView  fx:id="table" GridPane.columnIndex="0" GridPane.rowIndex="2" onMouseClicked="#onTableClicked">
+        <Button text="Обновить" alignment="TOP_CENTER" onAction="#updateTable" GridPane.rowIndex="1"/>
+        <TableView fx:id="table" GridPane.columnIndex="0" GridPane.rowIndex="2" onMouseClicked="#onTableClicked">
             <columns>
                 <TableColumn text="login" minWidth="100">
                     <cellValueFactory>

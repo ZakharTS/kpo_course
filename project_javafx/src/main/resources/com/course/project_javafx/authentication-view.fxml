@@ -15,7 +15,7 @@
     </padding>
 
     <Label fx:id="errorText" GridPane.columnIndex="0"/>
-    <TextField fx:id="loginText" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-    <PasswordField fx:id="passwordText" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <TextField fx:id="loginText" promptText="Логин" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <PasswordField fx:id="passwordText" promptText="Пароль" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     <Button text="Войти" onAction="#onLoginButtonClick" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
 </GridPane>

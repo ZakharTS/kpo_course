@@ -3,15 +3,15 @@ package com.course.project_javafx;
 public class User {
     private String login;
     private String password;
-    private String role;
+    private boolean role;
 
-    User(String login, String role) {
+    User(String login, boolean role) {
         this.login = login;
         this.password = null;
         this.role = role;
     }
 
-    User(String login, String password, String role) {
+    User(String login, String password, boolean role) {
         this.login = login;
         this.password = password;
         this.role = role;
@@ -26,12 +26,15 @@ public class User {
     }
 
     public String getRole() {
-        return role;
+        if (role) {
+            return "1";
+        } else {
+            return "0";
+        }
     }
 
     public boolean isRole() {
-        if(role.equals("1")) return true;
-        else return false;
+        return role;
     }
 
     public String getPassword() {
@@ -42,7 +45,7 @@ public class User {
         this.password = password;
     }
 
-    public void setRole(String role) {
+    public void setRole(boolean role) {
         this.role = role;
     }
 }
