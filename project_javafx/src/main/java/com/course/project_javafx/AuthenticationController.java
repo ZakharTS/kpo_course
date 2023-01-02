@@ -40,9 +40,10 @@ public class AuthenticationController {
 //        System.out.println(login);
 //        System.out.println(passwordHash);
 
-        // запрос правильного пароля из базы
-        ResultSet rs = Database.sqlRequest("SELECT * FROM users WHERE login=\"" + login + "\";");
+        
         try {
+			// запрос правильного пароля из базы
+			ResultSet rs = Database.sqlRequest("SELECT * FROM users WHERE login=\"" + login + "\";");
             rs.next();
 //            System.out.println(rs.getString("password"));
             if (passwordHash.equals(rs.getString("password"))) {

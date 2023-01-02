@@ -36,7 +36,84 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
         MainApplication.changeScene("scholarship-calculation-view.fxml", "Расчёт стипендии", 1280, 720);
     }
 
-    private String[] formToStrings() {
+    public void onAddButtonClicked() {
+        String[] fields = formToStrings();
+        if (fields == null) return;
+        try {
+            Database.sqlUpdate("INSERT INTO students values (NULL, \"" + fields[0] + "\", \"" + fields[1] + "\", " +
+                    fields[2] + ", \"" + fields[3] + "\", \"" + fields[4] + "\", " + fields[5] + ", 0);");
+            updateTable();
+            clearForm();
+        } catch (Exception e) {
+            System.out.println(e);
+            editLabel.setText("Что-то пошло не так.");
+        }
+    }
+    	
+	public void onDeleteButtonClicked() {
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            editLabel.setText("Выберите запись.");
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение");
+        alert.setHeaderText("Удаление записи студента " + table.getSelectionModel().getSelectedItem().getNSP());
+        alert.setContentText("Вы точно хотите удалить эту запись?");
+        ButtonType buttonYes = new ButtonType("Да");
+        ButtonType buttonCancel = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonYes, buttonCancel);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonYes) {
+            try {
+                Database.sqlUpdate("DELETE FROM students WHERE id=\"" + table.getSelectionModel().getSelectedItem().getId() + "\";");
+                updateTable();
+                editLabel.setText("Запись удалена.");
+                clearForm();
+            } catch (Exception e) {
+                editLabel.setText("Что-то пошло не так.");
+                System.out.println(e);
+            }
+        }
+    }
+	
+    public void onEditButtonClicked() {
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            editLabel.setText("Выберите запись.");
+            return;
+        }
+        final String[] fields = formToStrings();
+        if (fields == null) return;
+        try {
+            Database.sqlUpdate("UPDATE students SET nsp=\"" + fields[0] + "\", grp=\"" + fields[1] + "\", eduForm="
+                    + fields[2] + ", credits=\"" + fields[3] + "\", exams=\"" + fields[4] + "\", socWork=" + fields[5] +
+                    " WHERE id=" + table.getSelectionModel().getSelectedItem().getId() + ";");
+            updateTable();
+            editLabel.setText("Запись изменена.");
+            clearForm();
+        } catch (Exception e) {
+            System.out.println(e);
+            editLabel.setText("Что-то пошло не так.");
+        }
+    }
+	
+	public void clearForm() {
+        editNSPField.setText("");
+        editGroupField.setText("");
+        editSocWorkChoiceBox.setValue("");
+        editEduFormChoiceBox.setValue("");
+        credit0CheckBox.setSelected(false);
+        credit1CheckBox.setSelected(false);
+        credit2CheckBox.setSelected(false);
+        credit3CheckBox.setSelected(false);
+        credit4CheckBox.setSelected(false);
+        exam0ChoiceBox.setValue("");
+        exam1ChoiceBox.setValue("");
+        exam2ChoiceBox.setValue("");
+        exam3ChoiceBox.setValue("");
+    }
+	
+	private String[] formToStrings() {
         String NSP = editNSPField.getText();
         String group = editGroupField.getText();
 
@@ -94,55 +171,6 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
         return strings;
     }
 
-    public void onAddButtonClicked() {
-        String[] fields = formToStrings();
-        if (fields == null) return;
-        try {
-            Database.sqlUpdate("INSERT INTO students values (NULL, \"" + fields[0] + "\", \"" + fields[1] + "\", " +
-                    fields[2] + ", \"" + fields[3] + "\", \"" + fields[4] + "\", " + fields[5] + ", 0);");
-            updateTable();
-            clearForm();
-        } catch (Exception e) {
-            System.out.println(e);
-            editLabel.setText("Что-то пошло не так.");
-        }
-    }
-    public void clearForm() {
-        editNSPField.setText("");
-        editGroupField.setText("");
-        editSocWorkChoiceBox.setValue("");
-        editEduFormChoiceBox.setValue("");
-        credit0CheckBox.setSelected(false);
-        credit1CheckBox.setSelected(false);
-        credit2CheckBox.setSelected(false);
-        credit3CheckBox.setSelected(false);
-        credit4CheckBox.setSelected(false);
-        exam0ChoiceBox.setValue("");
-        exam1ChoiceBox.setValue("");
-        exam2ChoiceBox.setValue("");
-        exam3ChoiceBox.setValue("");
-    }
-
-    public void onEditButtonClicked() {
-        if (table.getSelectionModel().getSelectedItem() == null) {
-            editLabel.setText("Выберите запись.");
-            return;
-        }
-        final String[] fields = formToStrings();
-        if (fields == null) return;
-        try {
-            Database.sqlUpdate("UPDATE students SET nsp=\"" + fields[0] + "\", grp=\"" + fields[1] + "\", eduForm="
-                    + fields[2] + ", credits=\"" + fields[3] + "\", exams=\"" + fields[4] + "\", socWork=" + fields[5] +
-                    " WHERE id=" + table.getSelectionModel().getSelectedItem().getId() + ";");
-            updateTable();
-            editLabel.setText("Запись изменена.");
-            clearForm();
-        } catch (Exception e) {
-            System.out.println(e);
-            editLabel.setText("Что-то пошло не так.");
-        }
-    }
-
     @Override
     public void onTableClicked(MouseEvent mouseEvent) {
         Student student = table.getSelectionModel().getSelectedItem();
@@ -194,33 +222,6 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
             editSocWorkChoiceBox.setValue("Активная");
         } else {
             editSocWorkChoiceBox.setValue("Неактивная");
-        }
-    }
-
-    public void onDeleteButtonClicked() {
-        if (table.getSelectionModel().getSelectedItem() == null) {
-            editLabel.setText("Выберите запись.");
-            return;
-        }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Подтверждение");
-        alert.setHeaderText("Удаление записи студента " + table.getSelectionModel().getSelectedItem().getNSP());
-        alert.setContentText("Вы точно хотите удалить эту запись?");
-        ButtonType buttonYes = new ButtonType("Да");
-        ButtonType buttonCancel = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonYes, buttonCancel);
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.get() == buttonYes) {
-            try {
-                Database.sqlUpdate("DELETE FROM students WHERE id=\"" + table.getSelectionModel().getSelectedItem().getId() + "\";");
-                updateTable();
-                editLabel.setText("Запись удалена.");
-                clearForm();
-            } catch (Exception e) {
-                editLabel.setText("Что-то пошло не так.");
-                System.out.println(e);
-            }
         }
     }
 }

@@ -128,51 +128,49 @@ public class AccountManagerController {
             editLabel.setText("Недостаточно данных.");
             return;
         }
-        if (true) { // добавить подтверждение операции вместо true
-            String role;
-            if (editRoleChoiceBox.getValue().equals("Администратор")) {
-                role = "1";
-            } else {
-                role = "0";
-            }
-            String newLogin = editLoginField.getText();
-            if (!newLogin.equals(table.getSelectionModel().getSelectedItem().getLogin())) {
-                try {
-                    ResultSet rs = Database.sqlRequest("SELECT * FROM users WHERE login=\"" + newLogin + "\";");
-                    if (rs.next()) {
-                        editLabel.setText("Пользователь с таким\nлогином уже существует.");
-                        return;
-                    }
-                } catch (Exception e) {
-                    editLabel.setText("Что-то пошло не так.");
-                    System.out.println(e);
+        String role;
+        if (editRoleChoiceBox.getValue().equals("Администратор")) {
+            role = "1";
+        } else {
+            role = "0";
+        }
+        String newLogin = editLoginField.getText();
+        if (!newLogin.equals(table.getSelectionModel().getSelectedItem().getLogin())) {
+            try {
+                ResultSet rs = Database.sqlRequest("SELECT * FROM users WHERE login=\"" + newLogin + "\";");
+                if (rs.next()) {
+                    editLabel.setText("Пользователь с таким\nлогином уже существует.");
                     return;
                 }
-            }
-
-            String newPassword = new String();
-            if (!editPasswordField.getText().equals("")) {
-                try {
-                    newPassword = AuthenticationController.stringToHash(editPasswordField.getText());
-                } catch (Exception e) {
-                }
-            } else {
-                newPassword = table.getSelectionModel().getSelectedItem().getPassword();
-            }
-            try {
-                Database.sqlUpdate("UPDATE users SET login=\"" + newLogin + "\", password=\"" + newPassword
-                        + "\", role=" + role +
-                        " WHERE login=\"" + table.getSelectionModel().getSelectedItem().getLogin() + "\";");
-                editLabel.setText("Запись обновлена.");
-                editLoginField.setText("");
-                editPasswordField.setText("");
-                editRoleChoiceBox.setValue("            ");
-                this.updateTable();
             } catch (Exception e) {
                 editLabel.setText("Что-то пошло не так.");
                 System.out.println(e);
-                ;
+                return;
             }
+        }
+
+        String newPassword = new String();
+        if (!editPasswordField.getText().equals("")) {
+            try {
+                newPassword = AuthenticationController.stringToHash(editPasswordField.getText());
+            } catch (Exception e) {
+            }
+        } else {
+            newPassword = table.getSelectionModel().getSelectedItem().getPassword();
+        }
+        try {
+            Database.sqlUpdate("UPDATE users SET login=\"" + newLogin + "\", password=\"" + newPassword
+                    + "\", role=" + role +
+                    " WHERE login=\"" + table.getSelectionModel().getSelectedItem().getLogin() + "\";");
+            editLabel.setText("Запись обновлена.");
+            editLoginField.setText("");
+            editPasswordField.setText("");
+            editRoleChoiceBox.setValue("            ");
+            this.updateTable();
+        } catch (Exception e) {
+            editLabel.setText("Что-то пошло не так.");
+            System.out.println(e);
+            ;
         }
     }
 }

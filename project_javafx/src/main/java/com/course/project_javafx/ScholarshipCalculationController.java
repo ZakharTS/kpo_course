@@ -76,16 +76,13 @@ public class ScholarshipCalculationController {
     }
 
     public void onCalculateButtonClick() {
-        updateTable();
-        ObservableList<Student> newData = FXCollections.observableArrayList();
         for (Student cur : data) {
             if (cur.getEduFormRaw()) {
                 int sum = 0;
-                boolean isK1 = true;
-                double k = 1.5;
+                boolean isExc = true;
                 for (int exam : cur.getExams()) {
                     if (exam < 9) {
-                        isK1 = false;
+                        isExc = false;
                     }
                     sum += exam;
                 }
@@ -93,24 +90,26 @@ public class ScholarshipCalculationController {
                     cur.setScholarship(0.0);
                     continue;
                 }
-                if (!isK1) {
-                    k -= 0.25;
+
+                double k = 1.0;
+                if (isExc) {
+                    k += 0.25;
+                    if (cur.getSocWorkRaw()) {
+                        k += 0.25;
+                    }
                 }
-                if (!cur.getSocWorkRaw()) {
-                    k -= 0.25;
-                }
-                cur.setScholarship(Double.parseDouble(scholarshipTextField.getText()) * k);
                 for (boolean credit : cur.getCredits()) {
                     if (!credit) {
-                        cur.setScholarship(0.0);
+                        k = 0;
                         break;
                     }
                 }
+                cur.setScholarship(Double.parseDouble(scholarshipTextField.getText()) * k);
+
             }
-            newData.add(cur);
             Database.sqlUpdate("UPDATE students SET scholarship=" + cur.getScholarship() + " WHERE id=" + cur.getId());
         }
-        table.setItems(newData);
+        table.setItems(data);
     }
 
     public void onAdminButtonClicked() throws IOException {
