@@ -161,9 +161,6 @@
                     <ChoiceBox fx:id="exam0ChoiceBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="1"/>
-                                <String fx:value="2"/>
-                                <String fx:value="3"/>
                                 <String fx:value="4"/>
                                 <String fx:value="5"/>
                                 <String fx:value="6"/>
@@ -177,9 +174,6 @@
                     <ChoiceBox fx:id="exam1ChoiceBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="1"/>
-                                <String fx:value="2"/>
-                                <String fx:value="3"/>
                                 <String fx:value="4"/>
                                 <String fx:value="5"/>
                                 <String fx:value="6"/>
@@ -193,9 +187,6 @@
                     <ChoiceBox fx:id="exam2ChoiceBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="1"/>
-                                <String fx:value="2"/>
-                                <String fx:value="3"/>
                                 <String fx:value="4"/>
                                 <String fx:value="5"/>
                                 <String fx:value="6"/>
@@ -209,9 +200,6 @@
                     <ChoiceBox fx:id="exam3ChoiceBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="1"/>
-                                <String fx:value="2"/>
-                                <String fx:value="3"/>
                                 <String fx:value="4"/>
                                 <String fx:value="5"/>
                                 <String fx:value="6"/>

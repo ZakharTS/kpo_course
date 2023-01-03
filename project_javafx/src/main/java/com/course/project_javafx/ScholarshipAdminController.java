@@ -130,8 +130,8 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
             eduForm = "0";
         }
         if (NSP.equals("") || group.equals("") || socWork.equals("") || eduForm.equals("") ||
-                exam0ChoiceBox.getValue().equals("") || exam1ChoiceBox.getValue().equals("") ||
-                exam2ChoiceBox.getValue().equals("") || exam3ChoiceBox.getValue().equals("")) {
+                exam0ChoiceBox.getValue()  == null || exam1ChoiceBox.getValue() == null ||
+                exam2ChoiceBox.getValue() == null || exam3ChoiceBox.getValue() == null) {
             editLabel.setText("Заполните все поля.");
             return null;
         }

@@ -109,7 +109,7 @@ public class ScholarshipCalculationController {
             }
             Database.sqlUpdate("UPDATE students SET scholarship=" + cur.getScholarship() + " WHERE id=" + cur.getId());
         }
-        table.setItems(data);
+        updateTable();
     }
 
     public void onAdminButtonClicked() throws IOException {
