@@ -33,19 +33,15 @@ public class AuthenticationController {
         }
     }
 
-    private static User auth(String login, String password) throws NoSuchAlgorithmException { // авторизация
+    private static User auth(String login, String password) throws NoSuchAlgorithmException {
         User user = null;
 
         String passwordHash = stringToHash(password);
-//        System.out.println(login);
-//        System.out.println(passwordHash);
 
-        
+
         try {
-			// запрос правильного пароля из базы
-			ResultSet rs = Database.sqlRequest("SELECT * FROM users WHERE login=\"" + login + "\";");
+            ResultSet rs = Database.sqlRequest("SELECT * FROM users WHERE login=\"" + login + "\";");
             rs.next();
-//            System.out.println(rs.getString("password"));
             if (passwordHash.equals(rs.getString("password"))) {
                 user = new User(rs.getString("login"), rs.getBoolean("role"));
                 System.out.println("User " + login + " logged in.");

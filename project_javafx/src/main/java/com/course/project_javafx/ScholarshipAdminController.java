@@ -38,7 +38,10 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
 
     public void onAddButtonClicked() {
         String[] fields = formToStrings();
-        if (fields == null) return;
+        if (fields == null) {
+            editLabel.setText("Проверьте поля.");
+            return;
+        }
         try {
             Database.sqlUpdate("INSERT INTO students values (NULL, \"" + fields[0] + "\", \"" + fields[1] + "\", " +
                     fields[2] + ", \"" + fields[3] + "\", \"" + fields[4] + "\", " + fields[5] + ", 0);");
@@ -49,8 +52,8 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
             editLabel.setText("Что-то пошло не так.");
         }
     }
-    	
-	public void onDeleteButtonClicked() {
+
+    public void onDeleteButtonClicked() {
         if (table.getSelectionModel().getSelectedItem() == null) {
             editLabel.setText("Выберите запись.");
             return;
@@ -76,14 +79,17 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
             }
         }
     }
-	
+
     public void onEditButtonClicked() {
         if (table.getSelectionModel().getSelectedItem() == null) {
             editLabel.setText("Выберите запись.");
             return;
         }
         final String[] fields = formToStrings();
-        if (fields == null) return;
+        if (fields == null) {
+            editLabel.setText("Проверьте поля.");
+            return;
+        }
         try {
             Database.sqlUpdate("UPDATE students SET nsp=\"" + fields[0] + "\", grp=\"" + fields[1] + "\", eduForm="
                     + fields[2] + ", credits=\"" + fields[3] + "\", exams=\"" + fields[4] + "\", socWork=" + fields[5] +
@@ -96,8 +102,8 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
             editLabel.setText("Что-то пошло не так.");
         }
     }
-	
-	public void clearForm() {
+
+    public void clearForm() {
         editNSPField.setText("");
         editGroupField.setText("");
         editSocWorkChoiceBox.setValue("");
@@ -112,25 +118,30 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
         exam2ChoiceBox.setValue("");
         exam3ChoiceBox.setValue("");
     }
-	
-	private String[] formToStrings() {
-        String NSP = editNSPField.getText();
-        String group = editGroupField.getText();
 
-        String socWork = new String();
+    private String[] formToStrings() {
+        String NSP = editNSPField.getText();
+        if (!NSP.matches("[А-Я][а-я]+\\s+[А-Я]\\.\\s+[А-Я]\\.")) {
+            return null;
+        }
+        String group = editGroupField.getText();
+        if (!group.matches("")) {
+            return null;
+        }
+        String socWork = "";
         if (editSocWorkChoiceBox.getValue().toString().equals("Активная")) {
             socWork = "1";
         } else if (editSocWorkChoiceBox.getValue().toString().equals("Неактивная")) {
             socWork = "0";
         }
-        String eduForm = new String();
+        String eduForm = "";
         if (editEduFormChoiceBox.getValue().toString().equals("Бюджетная")) {
             eduForm = "1";
         } else if (editEduFormChoiceBox.getValue().toString().equals("Платная")) {
             eduForm = "0";
         }
         if (NSP.equals("") || group.equals("") || socWork.equals("") || eduForm.equals("") ||
-                exam0ChoiceBox.getValue()  == null || exam1ChoiceBox.getValue() == null ||
+                exam0ChoiceBox.getValue() == null || exam1ChoiceBox.getValue() == null ||
                 exam2ChoiceBox.getValue() == null || exam3ChoiceBox.getValue() == null) {
             editLabel.setText("Заполните все поля.");
             return null;
@@ -144,7 +155,7 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
                 add(credit4CheckBox);
             }
         };
-        String credits = new String();
+        String credits = "";
         for (CheckBox cur : creditsCheckBoxes) {
             if (cur.isSelected()) {
                 credits += "1, ";
@@ -161,7 +172,7 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
                 add(exam3ChoiceBox);
             }
         };
-        String exams = new String();
+        String exams = "";
         for (ChoiceBox cur : examsChoiceBoxes) {
             exams += cur.getValue().toString() + ", ";
         }
@@ -189,31 +200,11 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
         } else if (student.getEduForm().equals("П")) {
             editEduFormChoiceBox.setValue("Платная");
         }
-        if (student.getCredit0().equals("Зачт.")) {
-            credit0CheckBox.setSelected(true);
-        } else {
-            credit0CheckBox.setSelected(false);
-        }
-        if (student.getCredit1().equals("Зачт.")) {
-            credit1CheckBox.setSelected(true);
-        } else {
-            credit1CheckBox.setSelected(false);
-        }
-        if (student.getCredit2().equals("Зачт.")) {
-            credit2CheckBox.setSelected(true);
-        } else {
-            credit2CheckBox.setSelected(false);
-        }
-        if (student.getCredit3().equals("Зачт.")) {
-            credit3CheckBox.setSelected(true);
-        } else {
-            credit3CheckBox.setSelected(false);
-        }
-        if (student.getCredit4().equals("Зачт.")) {
-            credit4CheckBox.setSelected(true);
-        } else {
-            credit4CheckBox.setSelected(false);
-        }
+        credit0CheckBox.setSelected(student.getCredit0().equals("Зачт."));
+        credit1CheckBox.setSelected(student.getCredit1().equals("Зачт."));
+        credit2CheckBox.setSelected(student.getCredit2().equals("Зачт."));
+        credit3CheckBox.setSelected(student.getCredit3().equals("Зачт."));
+        credit4CheckBox.setSelected(student.getCredit4().equals("Зачт."));
         exam0ChoiceBox.setValue(student.getExam0());
         exam1ChoiceBox.setValue(student.getExam1());
         exam2ChoiceBox.setValue(student.getExam2());

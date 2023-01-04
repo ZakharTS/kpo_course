@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.Optional;
 
-/*Управление учетными записями пользователей: просмотреть все учетные записи;
-добавить учетную запись; отредактировать учетную запись; удалить учетную запись. */
 public class AccountManagerController {
 
     public TableView<User> table;
@@ -83,7 +81,6 @@ public class AccountManagerController {
     public void onTableClicked(MouseEvent mouseEvent) {
         User user = table.getSelectionModel().getSelectedItem();
         if (user == null) return;
-//            System.out.println(user.getLogin() + " " + user.getPassword() + " " + user.getRole());
         editLoginField.setText(user.getLogin());
         editLabel.setText("");
         if (user.isRole()) {
@@ -149,7 +146,7 @@ public class AccountManagerController {
             }
         }
 
-        String newPassword = new String();
+        String newPassword = "";
         if (!editPasswordField.getText().equals("")) {
             try {
                 newPassword = AuthenticationController.stringToHash(editPasswordField.getText());
@@ -170,7 +167,6 @@ public class AccountManagerController {
         } catch (Exception e) {
             editLabel.setText("Что-то пошло не так.");
             System.out.println(e);
-            ;
         }
     }
 }

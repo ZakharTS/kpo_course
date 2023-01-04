@@ -23,6 +23,7 @@ public class Database {
             return null;
         }
     }
+
     public static void sqlUpdate(String query) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

@@ -76,6 +76,8 @@ public class ScholarshipCalculationController {
     }
 
     public void onCalculateButtonClick() {
+        if (scholarshipTextField.getText().equals("")) return;
+        if (Double.parseDouble(scholarshipTextField.getText()) < 0) return;
         for (Student cur : data) {
             if (cur.getEduFormRaw()) {
                 int sum = 0;

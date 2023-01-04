@@ -29,6 +29,7 @@ public class MainApplication extends Application {
         changeScene("authentication-view.fxml", "Авторизация", 320, 240);
         stage.show();
     }
+
     public static void main(String[] args) {
         launch();
     }

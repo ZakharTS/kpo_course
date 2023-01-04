@@ -47,11 +47,7 @@ public class Student {
         credits = new boolean[5];
         String[] words = rs.getString("credits").split(", ");
         for (int i = 0; i < 5; i++) {
-            if (words[i].equals("1")) {
-                credits[i] = true;
-            } else {
-                credits[i] = false;
-            }
+            credits[i] = words[i].equals("1");
         }
         exams = new int[4];
         words = rs.getString("exams").split(", ");
@@ -93,6 +89,7 @@ public class Student {
             return "П";
         }
     }
+
     public boolean getEduFormRaw() {
         return eduForm;
     }
@@ -176,6 +173,7 @@ public class Student {
             return "Неакт.";
         }
     }
+
     public boolean getSocWorkRaw() {
         return socWork;
     }
@@ -197,6 +195,6 @@ public class Student {
     }
 
     public String toString() {
-        return id + " " + NSP + " " + group + " " + eduForm + " " + socWork;
+        return getId() + " " + getNSP() + " " + getGroup() + " " + getEduForm() + " " + getSocWork();
     }
 }
