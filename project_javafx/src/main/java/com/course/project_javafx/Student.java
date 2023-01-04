@@ -31,8 +31,8 @@ public class Student {
         for (int i = 0; i < 5; i++) {
             this.credits[i] = credits[i];
         }
-        this.exams = new int[4];
-        for (int i = 0; i < 4; i++) {
+        this.exams = new int[5];
+        for (int i = 0; i < 5; i++) {
             this.exams[i] = exams[i];
         }
         this.socWork = socWork;
@@ -49,9 +49,9 @@ public class Student {
         for (int i = 0; i < 5; i++) {
             credits[i] = words[i].equals("1");
         }
-        exams = new int[4];
+        exams = new int[5];
         words = rs.getString("exams").split(", ");
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             exams[i] = Integer.parseInt(words[i]);
         }
         socWork = rs.getBoolean("socWork");
@@ -160,6 +160,10 @@ public class Student {
 
     public String getExam3() {
         return Integer.toString(exams[3]);
+    }
+
+    public String getExam4() {
+        return Integer.toString(exams[4]);
     }
 
     public void setExams(int[] exams) {

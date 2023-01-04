@@ -88,11 +88,6 @@ public class ScholarshipCalculationController {
                     }
                     sum += exam;
                 }
-                if (sum / 4.0 < 5.0) {
-                    cur.setScholarship(0.0);
-                    continue;
-                }
-
                 double k = 1.0;
                 if (isExc) {
                     k += 0.25;
@@ -105,6 +100,9 @@ public class ScholarshipCalculationController {
                         k = 0;
                         break;
                     }
+                }
+                if (sum / 5.0 < 5.0) {
+                    k = 0;
                 }
                 cur.setScholarship(Double.parseDouble(scholarshipTextField.getText()) * k);
 

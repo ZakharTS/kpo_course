@@ -30,6 +30,7 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
     public ChoiceBox exam3ChoiceBox;
     public ChoiceBox editSocWorkChoiceBox;
     public TextField scholarshipTextField;
+    public ChoiceBox exam4ChoiceBox;
 
     @Override
     public void onBackButtonClicked() throws IOException {
@@ -117,17 +118,19 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
         exam1ChoiceBox.setValue("");
         exam2ChoiceBox.setValue("");
         exam3ChoiceBox.setValue("");
+
     }
 
     private String[] formToStrings() {
         String NSP = editNSPField.getText();
         if (!NSP.matches("[А-Я][а-я]+\\s+[А-Я]\\.\\s+[А-Я]\\.")) {
+//            System.out.println("NSP");
             return null;
         }
         String group = editGroupField.getText();
-        if (!group.matches("")) {
-            return null;
-        }
+//        if (!group.matches("[А-Я]\\-[0-9]]")) {
+//            return null;
+//        }
         String socWork = "";
         if (editSocWorkChoiceBox.getValue().toString().equals("Активная")) {
             socWork = "1";
@@ -170,6 +173,7 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
                 add(exam1ChoiceBox);
                 add(exam2ChoiceBox);
                 add(exam3ChoiceBox);
+                add(exam4ChoiceBox);
             }
         };
         String exams = "";
@@ -209,7 +213,8 @@ public class ScholarshipAdminController extends ScholarshipCalculationController
         exam1ChoiceBox.setValue(student.getExam1());
         exam2ChoiceBox.setValue(student.getExam2());
         exam3ChoiceBox.setValue(student.getExam3());
-        if (student.getSocWork().equals("Акт.")) {
+        exam4ChoiceBox.setValue(student.getExam4());
+        if (student.getSocWorkRaw()) {
             editSocWorkChoiceBox.setValue("Активная");
         } else {
             editSocWorkChoiceBox.setValue("Неактивная");

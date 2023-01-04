@@ -120,6 +120,11 @@
                         </TableColumn>
                     </columns>
                 </TableColumn>
+                <TableColumn text="Курсовая">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="exam4"/>
+                    </cellValueFactory>
+                </TableColumn>
                 <TableColumn text="О/Д" resizable="false" prefWidth="70">
                     <cellValueFactory>
                         <PropertyValueFactory property="socWork"/>

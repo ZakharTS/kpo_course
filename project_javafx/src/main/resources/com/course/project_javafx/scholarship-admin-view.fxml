@@ -119,6 +119,11 @@
                         </TableColumn>
                     </columns>
                 </TableColumn>
+                <TableColumn text="Курсовая">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="exam4"/>
+                    </cellValueFactory>
+                </TableColumn>
                 <TableColumn text="О/Д" resizable="false" prefWidth="70">
                     <cellValueFactory>
                         <PropertyValueFactory property="socWork"/>
@@ -211,6 +216,20 @@
                         </items>
                     </ChoiceBox>
                 </HBox>
+                <Label text="Курсовая работа"/>
+                <ChoiceBox fx:id="exam4ChoiceBox">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="4"/>
+                            <String fx:value="5"/>
+                            <String fx:value="6"/>
+                            <String fx:value="7"/>
+                            <String fx:value="8"/>
+                            <String fx:value="9"/>
+                            <String fx:value="10"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
                 <HBox spacing="10" alignment="TOP_CENTER">
                     <Label text="Общественная деятельность"/>
                     <ChoiceBox fx:id="editSocWorkChoiceBox" value="">
